@@ -1,1 +1,3 @@
-busbooking/
+
+# Ignore environment file only
+.env.local
