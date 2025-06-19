@@ -36,7 +36,7 @@ export default function Navigation() {
     }
   };
 
-  const showNav = ["/home", "/about", "/contact"].includes(pathname);
+  const showNav = ["/home", "/about", "/user/yourbooking"].includes(pathname);
 
   return (
     <>
@@ -84,14 +84,14 @@ export default function Navigation() {
             color: pathname === "/about" ? "#007bff" : "#495057",
             textDecoration: "none",
             fontWeight: pathname === "/about" ? "600" : "400"
-          }}>About</a>
-          <a href="/contact" style={{
-            color: pathname === "/contact" ? "#007bff" : "#495057",
+          }}>Map</a>
+          <a href="/user/yourbooking" style={{
+            color: pathname === "/user/yourbooking" ? "#007bff" : "#495057",
             textDecoration: "none",
-            fontWeight: pathname === "/contact" ? "600" : "400"
-          }}>Contact</a>
+            fontWeight: pathname === "/user/yourbooking" ? "600" : "400"
+          }}>Your Booking</a>
         </nav>
       )}
-    </>
+    </>  
   );
 }

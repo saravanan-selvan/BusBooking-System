@@ -138,7 +138,6 @@ export async function POST(req) {
     const seatCount = booking.selectedSeats?.length || 0;
 
     await Bus.findByIdAndUpdate(busId, {
-      $inc: { totalSeats: -seatCount }, // decrease totalSeats
       $push: { bookedSeats: { $each: newSeats } } // block the seats
     });
 
