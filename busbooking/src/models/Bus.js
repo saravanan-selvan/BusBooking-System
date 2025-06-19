@@ -21,8 +21,7 @@ const BusSchema = new mongoose.Schema({
       gender: String,
       journeyDate: String,
     }
-  ],
-  adminId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true } // 👈 added field
+  ], // 👈 added field
 }, { timestamps: true });
 
 export default mongoose.models.Bus || mongoose.model("Bus", BusSchema);

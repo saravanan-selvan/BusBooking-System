@@ -1,7 +1,6 @@
-"use client";
-
+"use client"
 import { useEffect, useState } from "react";
-import styles from "@/components/Styles/dashborad.module.css"; // ✅ corrected import
+import styles from "@/components/Styles/dashborad.module.css";
 
 export default function AdminDashboard() {
   const [buses, setBuses] = useState([]);
@@ -102,13 +101,12 @@ export default function AdminDashboard() {
         {buses.map((bus, index) => (
           <li key={index} className={styles["bus-card"]}>
             <h4>{bus.busName} - {bus.busNumber}</h4>
-            <p>Route: {bus.start} → {bus.end}</p>
-            <p>Time: {bus.startTime} - {bus.endTime}</p>
-            <p>Driver: {bus.driverName} ({bus.driverPhone})</p>
-            <p>Seats: {bus.totalSeats}</p>
-            <p>Lower Seats: {bus.lowerSeats}, Upper Seats: {bus.upperSeats}</p>
-            <p>Seat Type: {bus.seatType}, Layout: {bus.layout}</p>
-            <p>Price: ₹{bus.price}</p>
+            <p><strong>Route:</strong> {bus.start} → {bus.end}</p>
+            <p><strong>Time:</strong> {bus.startTime} - {bus.endTime}</p>
+            <p><strong>Driver:</strong> {bus.driverName} ({bus.driverPhone})</p>
+            <p><strong>Seats:</strong> {bus.totalSeats} ({bus.seatType}, {bus.layout} layout)</p>
+            <p><strong>Lower Seats:</strong> {bus.lowerSeats}, <strong>Upper Seats:</strong> {bus.upperSeats}</p>
+            <p><strong>Price:</strong> ₹{bus.price}</p>
           </li>
         ))}
       </ul>
