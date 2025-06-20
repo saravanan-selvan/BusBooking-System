@@ -4,10 +4,10 @@ import { useRouter } from "next/navigation";
 import styles from "@/components/Styles/dashborad.module.css";
 import { FaBusAlt } from "react-icons/fa";
 
-
 export default function AdminDashboard() {
   const router = useRouter();
   const [buses, setBuses] = useState([]);
+  const [expandedBusId, setExpandedBusId] = useState(null);
   const [newBus, setNewBus] = useState({
     busNumber: "",
     busName: "",
@@ -27,12 +27,8 @@ export default function AdminDashboard() {
 
   const handleDeleteBus = async (id) => {
     if (!confirm("Are you sure you want to delete this bus?")) return;
-
     try {
-      const res = await fetch(`/api/admin/buses/${id}`, {
-        method: "DELETE",
-      });
-
+      const res = await fetch(`/api/admin/buses/${id}`, { method: "DELETE" });
       if (res.ok) {
         setBuses(prev => prev.filter(bus => bus._id !== id));
       } else {
@@ -43,14 +39,16 @@ export default function AdminDashboard() {
     }
   };
 
+  const toggleDetails = (busId) => {
+    setExpandedBusId(prev => (prev === busId ? null : busId));
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const res = await fetch("/api/auth/status");
         const data = await res.json();
-        if (!data.authenticated) {
-          router.push("/");
-        }
+        if (!data.authenticated) router.push("/");
       } catch (error) {
         router.push("/");
       }
@@ -127,9 +125,7 @@ export default function AdminDashboard() {
             <option value="2+3">2 + 3</option>
           </select>
         </div>
-        <button onClick={handleAddBus} className={styles["add-button"]}>
-          🚀 Add Bus
-        </button>
+        <button onClick={handleAddBus} className={styles["add-button"]}>🚀 Add Bus</button>
       </div>
 
       <h3 className={styles["section-title"]}>🧾 Existing Buses</h3>
@@ -143,10 +139,26 @@ export default function AdminDashboard() {
             <p><strong>💺 Seats:</strong> {bus.totalSeats} ({bus.seatType}, {bus.layout} layout)</p>
             <p><strong>⬇️ Lower:</strong> {bus.lowerSeats} &nbsp; <strong>⬆️ Upper:</strong> {bus.upperSeats}</p>
             <p><strong>💰 Price:</strong> ₹{bus.price}</p>
-            <button className={styles["delete-button"]} onClick={() => handleDeleteBus(bus._id)}>
-              🗑️ Delete
-            </button>
-            <button className={styles["delete-button"]}>Booking Details</button>
+            <button className={styles["delete-button"]} onClick={() => handleDeleteBus(bus._id)}>🗑️ Delete</button>
+            <button className={styles["delete-button"]} onClick={() => toggleDetails(bus._id)}>📋 Booking Details</button>
+
+            {expandedBusId === bus._id && (
+              <div className={styles["bookings-list"]}>
+                <h5>📅 Bookings (Sorted by Date)</h5>
+                <ul>
+                  {[...bus.bookedSeats || []]
+                    .sort((a, b) => new Date(a.journeyDate) - new Date(b.journeyDate))
+                    .map((seat, idx) => (
+                      <li key={idx} className={styles["booking-entry"]}>
+                        <strong>Seat:</strong> {seat.seat} |
+                        <strong> Name:</strong> {seat.name} |
+                        <strong> Gender:</strong> {seat.gender} |
+                        <strong> Date:</strong> {seat.journeyDate}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </li>
         ))}
       </ul>

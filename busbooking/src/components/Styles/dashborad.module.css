@@ -276,3 +276,32 @@
     font-size: 1.1rem;
   }
 }
+
+
+.details-button {
+  background-color: #2b82f6;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.bookings-list {
+  background: #f9f9f9;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+}
+
+.booking-entry {
+  margin-bottom: 6px;
+  padding: 6px;
+  background: #ffffff;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.06);
+}
