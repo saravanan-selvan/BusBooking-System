@@ -1,8 +1,12 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "@/components/Styles/dashborad.module.css";
+import { FaBusAlt } from "react-icons/fa";
+
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [buses, setBuses] = useState([]);
   const [newBus, setNewBus] = useState({
     busNumber: "",
@@ -20,6 +24,39 @@ export default function AdminDashboard() {
     endTime: "",
     price: ""
   });
+
+  const handleDeleteBus = async (id) => {
+    if (!confirm("Are you sure you want to delete this bus?")) return;
+
+    try {
+      const res = await fetch(`/api/admin/buses/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setBuses(prev => prev.filter(bus => bus._id !== id));
+      } else {
+        console.error("Failed to delete bus");
+      }
+    } catch (error) {
+      console.error("Error deleting bus:", error);
+    }
+  };
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/auth/status");
+        const data = await res.json();
+        if (!data.authenticated) {
+          router.push("/");
+        }
+      } catch (error) {
+        router.push("/");
+      }
+    };
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     fetch("/api/admin/buses")
@@ -64,49 +101,52 @@ export default function AdminDashboard() {
 
   return (
     <div className={styles["dashboard-container"]}>
-      <h2>Admin Dashboard - All Buses</h2>
+      <h2 className={styles["dashboard-heading"]}><FaBusAlt /> Admin Dashboard - Manage Your Buses</h2>
 
       <div className={styles["form-section"]}>
-        <h3>Add New Bus</h3>
+        <h3 className={styles["section-title"]}>➕ Add New Bus</h3>
         <div className={styles["form-grid"]}>
-          <input name="busNumber" value={newBus.busNumber} onChange={handleChange} placeholder="Bus Number" className={styles["form-input"]} />
-          <input name="busName" value={newBus.busName} onChange={handleChange} placeholder="Bus Name" className={styles["form-input"]} />
-          <input name="start" value={newBus.start} onChange={handleChange} placeholder="Start Location" className={styles["form-input"]} />
-          <input name="end" value={newBus.end} onChange={handleChange} placeholder="End Location" className={styles["form-input"]} />
-          <input name="startTime" value={newBus.startTime} onChange={handleChange} placeholder="Start Time" className={styles["form-input"]} />
-          <input name="endTime" value={newBus.endTime} onChange={handleChange} placeholder="End Time" className={styles["form-input"]} />
-          <input name="totalSeats" value={newBus.totalSeats} onChange={handleChange} placeholder="Total Seats" className={styles["form-input"]} />
-          <input name="lowerSeats" value={newBus.lowerSeats} onChange={handleChange} placeholder="Lower Seats" className={styles["form-input"]} />
-          <input name="upperSeats" value={newBus.upperSeats} onChange={handleChange} placeholder="Upper Seats" className={styles["form-input"]} />
+          {["busNumber", "busName", "start", "end", "startTime", "endTime", "totalSeats", "lowerSeats", "upperSeats", "driverName", "driverPhone", "price"].map(field => (
+            <input
+              key={field}
+              name={field}
+              value={newBus[field]}
+              onChange={handleChange}
+              placeholder={field.replace(/([A-Z])/g, ' $1')}
+              className={styles["form-input"]}
+            />
+          ))}
           <select name="seatType" value={newBus.seatType} onChange={handleChange} className={styles["form-input"]}>
             <option value="seater">Seater</option>
             <option value="sleeper">Sleeper</option>
           </select>
           <select name="layout" value={newBus.layout} onChange={handleChange} className={styles["form-input"]}>
-            <option value="2+1">2 + 1</option>
+            <option value="1+2">1 + 2</option>
             <option value="2+2">2 + 2</option>
             <option value="1+1">1 + 1</option>
+            <option value="2+3">2 + 3</option>
           </select>
-          <input name="driverName" value={newBus.driverName} onChange={handleChange} placeholder="Driver Name" className={styles["form-input"]} />
-          <input name="driverPhone" value={newBus.driverPhone} onChange={handleChange} placeholder="Driver Phone" className={styles["form-input"]} />
-          <input name="price" value={newBus.price} onChange={handleChange} placeholder="Price" className={styles["form-input"]} />
         </div>
         <button onClick={handleAddBus} className={styles["add-button"]}>
-          Add Bus
+          🚀 Add Bus
         </button>
       </div>
 
-      <h3>Existing Buses</h3>
+      <h3 className={styles["section-title"]}>🧾 Existing Buses</h3>
       <ul className={styles["bus-list"]}>
         {buses.map((bus, index) => (
           <li key={index} className={styles["bus-card"]}>
             <h4>{bus.busName} - {bus.busNumber}</h4>
-            <p><strong>Route:</strong> {bus.start} → {bus.end}</p>
-            <p><strong>Time:</strong> {bus.startTime} - {bus.endTime}</p>
-            <p><strong>Driver:</strong> {bus.driverName} ({bus.driverPhone})</p>
-            <p><strong>Seats:</strong> {bus.totalSeats} ({bus.seatType}, {bus.layout} layout)</p>
-            <p><strong>Lower Seats:</strong> {bus.lowerSeats}, <strong>Upper Seats:</strong> {bus.upperSeats}</p>
-            <p><strong>Price:</strong> ₹{bus.price}</p>
+            <p><strong>🛣️ Route:</strong> {bus.start} → {bus.end}</p>
+            <p><strong>🕓 Time:</strong> {bus.startTime} - {bus.endTime}</p>
+            <p><strong>👨‍✈️ Driver:</strong> {bus.driverName} ({bus.driverPhone})</p>
+            <p><strong>💺 Seats:</strong> {bus.totalSeats} ({bus.seatType}, {bus.layout} layout)</p>
+            <p><strong>⬇️ Lower:</strong> {bus.lowerSeats} &nbsp; <strong>⬆️ Upper:</strong> {bus.upperSeats}</p>
+            <p><strong>💰 Price:</strong> ₹{bus.price}</p>
+            <button className={styles["delete-button"]} onClick={() => handleDeleteBus(bus._id)}>
+              🗑️ Delete
+            </button>
+            <button className={styles["delete-button"]}>Booking Details</button>
           </li>
         ))}
       </ul>

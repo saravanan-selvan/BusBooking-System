@@ -20,6 +20,7 @@ const BusSchema = new mongoose.Schema({
       seat: Number,
       gender: String,
       journeyDate: String,
+      name : String,
     }
   ], // 👈 added field
 }, { timestamps: true });

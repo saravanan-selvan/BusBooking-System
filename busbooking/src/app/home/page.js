@@ -69,6 +69,9 @@ export default function HomePage() {
                 <span className={styles.busIcon}>💺</span>
                 Seats: <span className={styles.seatsBadge}>{bus.totalSeats}</span>
               </p>
+              <p className={styles.busInfo}>
+                <span className={styles.busIcon}>💰</span>
+                Price: {bus.price}</p>
               <button
                 onClick={() => router.push(`/user/booking/${bus._id}`)}
                 className={styles.bookButton}

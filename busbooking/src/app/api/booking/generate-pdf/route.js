@@ -131,6 +131,8 @@ export async function POST(req) {
     const newSeats = booking.selectedSeats.map(seat => ({
       seat,
       gender: booking.userInfo.gender,
+      journeyDate: booking.journeyDate,
+      name: booking.userInfo.name,
       journeyDate: new Date(booking.journeyDate).toISOString().split("T")[0]
     }));
 
